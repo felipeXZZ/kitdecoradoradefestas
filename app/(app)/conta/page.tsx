@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronRight, LogOut, Settings, Sparkles } from "lucide-react";
+import { ChevronRight, LogOut, Settings, Sparkles, Store } from "lucide-react";
 import { IconeWhatsapp } from "@/components/icone-whatsapp";
 import { ehAdmin } from "@/lib/admin";
 import { CHECKOUT_UPGRADE_URL, linkWhatsapp } from "@/lib/config";
@@ -48,6 +48,17 @@ export default async function ContaPage() {
             Liberar tudo por R$ 12
           </a>
         </section>
+      )}
+
+      {sessao.plano === "completo" && (
+        <Link
+          href="/meus-dados"
+          className="flex h-14 items-center gap-3 rounded-xl border border-linha bg-white px-4 font-semibold"
+        >
+          <Store className="size-5 text-framboesa" aria-hidden="true" />
+          <span className="flex-1">Meus dados do negócio</span>
+          <ChevronRight className="size-5 text-ameixa/40" aria-hidden="true" />
+        </Link>
       )}
 
       <div className="grid gap-2">

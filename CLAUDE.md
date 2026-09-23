@@ -480,7 +480,40 @@ para conferir a home antes de partir para a calculadora.
 
 ---
 
-## 15. Aviso de segurança do acervo
+## 15. Fase 2 — ferramentas (em construção)
+
+Especificação própria, colada no chat: perfil do negócio, orçamento em PDF,
+documentos prontos e scripts de WhatsApp. Tudo exclusivo do plano `completo`.
+
+Duas adaptações obrigatórias, porque a especificação foi escrita quando o app
+ainda usava Supabase Auth:
+
+- **Chave por e-mail, não por `auth.uid()`.** Não existe usuário no Auth (seção
+  5), então `perfil_negocio` e `orcamentos` usam `email` e são acessadas só por
+  rota de servidor com a service role, como `compras`. RLS ligado sem policy.
+- **"Usar um cálculo salvo" lê o `localStorage`**, não a tabela `calculos`, que
+  está sem uso.
+
+Decisões que valem manter:
+
+- PDF com `@react-pdf/renderer` em rota de servidor. Nada de Puppeteer: o
+  Chromium estoura o tamanho da função na Vercel e o cold start passa de 10s.
+- Número do orçamento sai da função `proximo_numero_orcamento` com `for update`,
+  nunca do cliente.
+- Buckets `logos` e `documentos` são privados; o acesso sai por URL assinada.
+- O PDF não leva marca nossa. É material comercial dela.
+- Contrato e termo de responsabilidade **não são redigidos por modelo de
+  linguagem**: o texto vai para `documentos_modelo` depois da revisão de um
+  advogado.
+
+SQL em `supabase/05-ferramentas.sql`.
+
+Estado: item 1 (perfil do negócio e tela "Meus dados") feito. Faltam PDF,
+orçamentos, documentos, scripts, navegação de 5 abas e admin dos modelos.
+
+---
+
+## 16. Aviso de segurança do acervo
 
 Link de pasta compartilhada do Google Drive vaza e não dá para revogar depois.
 Está aceito nesta versão para subir rápido. Assim que houver faturamento, migre
