@@ -189,6 +189,10 @@ compra e entra na hora.
   não tem acesso. Rotas públicas: `/entrar`, `/sair` e `/api/webhook`.
 - `POST /sair` apaga o cookie.
 
+Abaixo do formulário fica o bloco "Com dificuldade para entrar?", com WhatsApp
+(`NEXT_PUBLIC_WHATSAPP_NUMERO`) e Instagram (`NEXT_PUBLIC_INSTAGRAM_URL`).
+Ninguém pode travar na porta sem ter com quem falar.
+
 O limite conhecido: quem souber o e-mail de uma compradora entra. Aceito nesta
 versão para lançar rápido. O caminho de volta para acesso individual de verdade
 é magic link do Supabase Auth, que exige SMTP próprio configurado.
@@ -450,6 +454,7 @@ SUPABASE_SERVICE_ROLE_KEY=
 SESSAO_SECRET=
 NEXT_PUBLIC_SITE_URL=
 NEXT_PUBLIC_WHATSAPP_NUMERO=
+NEXT_PUBLIC_INSTAGRAM_URL=
 NEXT_PUBLIC_CHECKOUT_UPGRADE_URL=
 NEXT_PUBLIC_BANNER_NOVIDADE=
 NEXT_PUBLIC_BANNER_NOVIDADE_URL=

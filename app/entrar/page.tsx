@@ -1,3 +1,4 @@
+import { CanaisAjuda } from "@/components/canais-ajuda";
 import { Logo } from "@/components/logo";
 import { FormEntrada } from "./form-entrada";
 
@@ -11,6 +12,7 @@ export default function EntrarPage() {
           <Logo tamanho="lg" />
         </div>
         <FormEntrada />
+        <CanaisAjuda />
       </div>
     </main>
   );
