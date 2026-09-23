@@ -405,8 +405,10 @@ Notas de implementação:
 - Produto → plano pelas variáveis `WEBHOOK_PRODUTOS_BASICO`, `_COMPLETO` e
   `_UPGRADE` (IDs da GGCheckout, separados por vírgula). Olha `product.id` e
   todos os `products[].id` (order bump e upsell entram na mesma compra) e vale o
-  maior acesso. Produto fora da lista é registrado e ignorado. Plano nunca é
-  rebaixado.
+  maior acesso. Plano nunca é rebaixado.
+- `WEBHOOK_PRODUTO_PADRAO` (`basico` | `completo`) é a rede de segurança: produto
+  fora das listas cai nesse plano em vez de ficar sem acesso. Vazio, a compra é
+  só registrada e ignorada.
 - Compra aprovada faz upsert em `compras` com e-mail, nome e plano. Não envia
   e-mail nenhum: a cliente recebe o link do app pela própria GGCheckout e entra
   digitando o e-mail.
@@ -448,6 +450,7 @@ WEBHOOK_SECRET=
 WEBHOOK_PRODUTOS_BASICO=
 WEBHOOK_PRODUTOS_COMPLETO=
 WEBHOOK_PRODUTOS_UPGRADE=
+WEBHOOK_PRODUTO_PADRAO=
 ADMIN_EMAILS=
 ```
 

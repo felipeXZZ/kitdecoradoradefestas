@@ -148,6 +148,11 @@ function tipoDoProduto(ids: string[]): Tipo | null {
   if (ids.some((id) => lista("WEBHOOK_PRODUTOS_COMPLETO").includes(id))) return "completo";
   if (ids.some((id) => lista("WEBHOOK_PRODUTOS_UPGRADE").includes(id))) return "upgrade";
   if (ids.some((id) => lista("WEBHOOK_PRODUTOS_BASICO").includes(id))) return "basico";
+
+  // Rede de segurança: produto fora das listas cai no plano padrão, se houver.
+  // Vale mais liberar acesso a mais do que deixar uma compradora na mão.
+  const padrao = (process.env.WEBHOOK_PRODUTO_PADRAO ?? "").trim();
+  if (padrao === "basico" || padrao === "completo") return padrao;
   return null;
 }
 
