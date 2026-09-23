@@ -56,6 +56,7 @@ export async function POST(request: NextRequest) {
     .toLowerCase();
   const pagamentoId = texto(pegar(payload, "payment.id", "data.payment.id", "transaction_id"));
   const produtos = idsDeProduto(payload);
+  const valor = valorEmReais(pegar(payload, "payment.amount", "data.payment.amount", "amount"));
   const base = { email, produto: produtos.join(",") || undefined };
 
   if (!STATUS_APROVADO.has(status)) {
@@ -65,7 +66,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: true, ignorado: "status" });
   }
 
-  const tipo = tipoDoProduto(produtos);
+  const tipo = tipoDaCompra(produtos, valor);
   if (!email || !tipo) {
     await log("ignorado", { ...base, detalhe: !email ? "sem e-mail" : "produto não mapeado" });
     return NextResponse.json({ ok: true, ignorado: !email ? "email" : "produto" });
@@ -137,8 +138,20 @@ function idsDeProduto(payload: unknown) {
   return [...ids];
 }
 
-/** O produto de maior acesso ganha: completo/upgrade na frente do básico. */
-function tipoDoProduto(ids: string[]): Tipo | null {
+/** Centavos ou reais: o gateway manda `amount` de um jeito nas duas. */
+function valorEmReais(v: unknown) {
+  const n = typeof v === "string" ? Number(v.replace(",", ".")) : Number(v);
+  if (!Number.isFinite(n) || n <= 0) return null;
+  // Acima de mil não é preço deste produto: veio em centavos.
+  return n > 1000 ? n / 100 : n;
+}
+
+/**
+ * Qual acesso a compra dá. Primeiro pelos IDs de produto; se o checkout usa um
+ * produto só com ofertas diferentes (é o nosso caso na GGCheckout), decide pelo
+ * valor pago. O produto de maior acesso ganha.
+ */
+function tipoDaCompra(ids: string[], valor: number | null): Tipo | null {
   const lista = (nome: string) =>
     (process.env[nome] ?? "")
       .split(",")
@@ -149,8 +162,20 @@ function tipoDoProduto(ids: string[]): Tipo | null {
   if (ids.some((id) => lista("WEBHOOK_PRODUTOS_UPGRADE").includes(id))) return "upgrade";
   if (ids.some((id) => lista("WEBHOOK_PRODUTOS_BASICO").includes(id))) return "basico";
 
-  // Rede de segurança: produto fora das listas cai no plano padrão, se houver.
-  // Vale mais liberar acesso a mais do que deixar uma compradora na mão.
+  if (valor !== null) {
+    const numero = (nome: string, padrao: number) => {
+      const n = Number(process.env[nome]);
+      return Number.isFinite(n) && n > 0 ? n : padrao;
+    };
+    // Upgrade custa menos que o completo, então é testado antes.
+    const upgrade = numero("WEBHOOK_VALOR_UPGRADE", 12);
+    if (Math.abs(valor - upgrade) < 0.5) return "upgrade";
+    if (valor >= numero("WEBHOOK_VALOR_MIN_COMPLETO", 20)) return "completo";
+    return "basico";
+  }
+
+  // Sem ID conhecido e sem valor: cai no plano padrão, se houver. Vale mais
+  // liberar acesso a mais do que deixar uma compradora na mão.
   const padrao = (process.env.WEBHOOK_PRODUTO_PADRAO ?? "").trim();
   if (padrao === "basico" || padrao === "completo") return padrao;
   return null;
