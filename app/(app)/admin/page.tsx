@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronRight, ImageOff, Plus } from "lucide-react";
+import { ChevronRight, FileText, ImageOff, Plus } from "lucide-react";
 import { exigirAdmin } from "@/lib/admin";
 import { urlImagem } from "@/lib/imagem";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -40,6 +40,15 @@ export default async function AdminPage() {
           Novo módulo
         </Link>
       </div>
+
+      <Link
+        href="/admin/conteudo"
+        className="mb-4 flex h-12 items-center gap-3 rounded-xl border border-dashed border-linha px-4 text-sm font-semibold text-ameixa/70"
+      >
+        <FileText className="size-5" aria-hidden="true" />
+        <span className="flex-1">Scripts e modelos de documento</span>
+        <ChevronRight className="size-5" aria-hidden="true" />
+      </Link>
 
       {modulos.length === 0 ? (
         <p className="rounded-2xl border border-dashed border-linha bg-white px-5 py-10 text-center text-ameixa/70">

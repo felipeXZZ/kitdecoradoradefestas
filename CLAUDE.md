@@ -513,8 +513,28 @@ Decisões que valem manter:
 
 SQL em `supabase/05-ferramentas.sql`.
 
-Estado: item 1 (perfil do negócio e tela "Meus dados") feito. Faltam PDF,
-orçamentos, documentos, scripts, navegação de 5 abas e admin dos modelos.
+### Rotas da fase 2
+
+- `/meus-dados` — perfil do negócio, logo no bucket privado `logos`.
+- `/orcamentos`, `/orcamentos/novo` (3 passos), `/orcamentos/[id]` — lista,
+  criação, PDF, status, duplicar. O passo 1 aceita um cálculo do aparelho ou
+  valor digitado.
+- `/documentos` — os quatro tipos fixos em `lib/documentos.ts`; tipo sem linha
+  em `documentos_modelo` aparece "Em breve".
+- `/scripts` — abas por categoria, copiar e abrir no WhatsApp.
+- `/admin/conteudo` — edita scripts e modelos de documento.
+
+O conteúdo (5 scripts + recibo + checklist) está em
+`supabase/conteudo-ferramentas.json` e entra no banco com
+`node scripts/semear.cjs`. Contrato e termo seguem fora até a revisão jurídica.
+
+Envio no WhatsApp: `navigator.canShare({files})` manda o PDF de verdade no
+celular; no computador cai no `wa.me` com a mensagem e o link assinado, porque
+`wa.me` não anexa arquivo.
+
+Estado: itens 1 a 8 feitos e testados no app rodando (criação de orçamento com
+PDF, recibo a partir de orçamento, bloqueio do plano `basico` na tela e na
+action). Falta só o texto jurídico do contrato e do termo.
 
 ---
 

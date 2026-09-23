@@ -1,0 +1,51 @@
+{
+  "_leia": "Conteúdo das ferramentas. Aplique com: node scripts/semear.cjs. Contrato e termo de responsabilidade não entram aqui até passarem por um advogado.",
+  "scripts": [
+    {
+      "categoria": "orcamento",
+      "ordem": 1,
+      "titulo": "Primeira resposta a quem pede orçamento",
+      "corpo": "Oi, {{cliente_nome}}! Que alegria você ter chamado 💛\n\nPra eu montar um orçamento certinho, me conta três coisas:\n1. Data e horário da festa\n2. Local (casa, salão, buffet)\n3. Tema e ideia de cores\n\nCom isso eu te mando a proposta com tudo que está incluso, ainda hoje."
+    },
+    {
+      "categoria": "objecao",
+      "ordem": 1,
+      "titulo": "Como responder \"tá caro\" sem baixar o preço",
+      "corpo": "Entendo você, {{cliente_nome}}, e agradeço a sinceridade 💛\n\nNesse valor estão o material, a montagem, a desmontagem e o meu tempo cuidando de cada detalhe pra você só curtir a festa. Eu não consigo baixar o preço sem tirar alguma coisa do combinado.\n\nO que eu posso fazer é adequar o projeto ao valor que cabe pra você. Me diz quanto você tem reservado pra decoração que eu monto uma versão bonita dentro disso."
+    },
+    {
+      "categoria": "sinal",
+      "ordem": 1,
+      "titulo": "Como cobrar o sinal sem constrangimento",
+      "corpo": "{{cliente_nome}}, fico muito feliz que você escolheu a gente 🎉\n\nPra sua data ficar reservada no meu calendário, eu peço um sinal e o restante fica pra entrega, no dia da festa.\n\nAssim que cair, eu já bloqueio a data no seu nome e começo a separar o material. Posso te mandar a chave Pix?"
+    },
+    {
+      "categoria": "followup",
+      "ordem": 1,
+      "titulo": "Follow-up de orçamento que ficou sem resposta",
+      "corpo": "Oi, {{cliente_nome}}, tudo bem? 😊\n\nPassando só pra saber se você conseguiu ver o orçamento que te mandei e se ficou alguma dúvida.\n\nSe a data ainda estiver de pé, me avisa: eu seguro ela pra você até o fim da semana. Depois disso eu preciso liberar pra outros pedidos."
+    },
+    {
+      "categoria": "indicacao",
+      "ordem": 1,
+      "titulo": "Pedido de indicação depois da festa",
+      "corpo": "{{cliente_nome}}, que festa linda! Obrigada por ter confiado na gente 💛\n\nSe você gostou do resultado, me ajuda de duas formas rapidinhas?\n1. Manda uma fotinho da decoração que eu adoro ver\n2. Indica meu contato pra uma amiga que vai fazer festa\n\nIndicação de cliente feliz é o que faz o meu trabalho crescer. Conte comigo na próxima!"
+    }
+  ],
+  "modelos": [
+    {
+      "tipo": "recibo",
+      "ordem": 1,
+      "titulo": "Recibo de sinal",
+      "descricao": "Comprovante do sinal que reservou a data",
+      "corpo": "Recebi de {{cliente_nome}} a quantia de {{valor_sinal}}, referente ao sinal pela contratação dos serviços de decoração de festa, com montagem prevista para {{data_festa}}, no local: {{local_festa}}.\n\nO valor total contratado é de {{valor_total}}, restando o saldo de {{valor_saldo}} a ser pago na entrega da montagem.\n\nO pagamento deste sinal reserva a data acima na agenda de {{nome_negocio}}.\n\nPara clareza, firmo o presente recibo."
+    },
+    {
+      "tipo": "checklist",
+      "ordem": 2,
+      "titulo": "Checklist de montagem e retirada",
+      "descricao": "Para não esquecer nada na correria do dia",
+      "corpo": "Festa de {{cliente_nome}} · {{data_festa}} · {{local_festa}}\n\nANTES DE SAIR DE CASA\n( ) Painel e estrutura\n( ) Balões, fitas e bomba de encher\n( ) Flores e arranjos\n( ) Toalhas e tecidos\n( ) Boleiras, bandejas e suportes\n( ) Letreiro ou topo personalizado\n( ) Fita dupla face, cola quente, grampeador, tesoura e alicate\n( ) Extensão e adaptador de tomada\n( ) Escada\n( ) Pano, álcool e saco de lixo\n\nNA CHEGADA\n( ) Conferir o espaço e a tomada mais próxima\n( ) Fotografar o local antes da montagem\n( ) Montar estrutura e painel\n( ) Montar a mesa principal\n( ) Distribuir arranjos e detalhes\n( ) Conferir altura e alinhamento do painel\n( ) Limpar o espaço da montagem\n\nANTES DE IR EMBORA\n( ) Fotografar a decoração pronta, sem pessoas\n( ) Conferir com o cliente a lista do que está incluso\n( ) Combinar o horário da retirada\n( ) Confirmar o pagamento do saldo\n\nNA RETIRADA\n( ) Desmontar na ordem inversa da montagem\n( ) Conferir item por item desta lista\n( ) Verificar se há dano no material reutilizável\n( ) Deixar o espaço limpo\n( ) Agradecer e pedir indicação"
+    }
+  ]
+}

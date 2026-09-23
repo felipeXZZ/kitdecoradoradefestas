@@ -36,21 +36,21 @@ const FERRAMENTAS = [
     rotulo: "Orçamentos",
     texto: "Orçamento em PDF com a sua marca",
     Icone: Receipt,
-    pronta: false,
+    pronta: true,
   },
   {
     href: "/documentos",
     rotulo: "Documentos",
     texto: "Contrato, termo, recibo e checklist",
     Icone: FileText,
-    pronta: false,
+    pronta: true,
   },
   {
     href: "/scripts",
     rotulo: "Scripts",
     texto: "O que responder no WhatsApp",
     Icone: MessageSquareQuote,
-    pronta: false,
+    pronta: true,
   },
 ] as const;
 
