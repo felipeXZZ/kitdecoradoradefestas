@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-ameixa: #2b1b2e;
+  --color-framboesa: #b0306b;
+  --color-framboesa-escura: #962859;
+  --color-confete: #f2a93b;
+  --color-confete-claro: #fdf0da;
+  --color-menta: #1f7a5a;
+  --color-papel: #fcf7f8;
+  --color-linha: #e9dce1;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-titulo: var(--font-bricolage), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply bg-papel font-sans text-ameixa antialiased;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-framboesa;
+  }
+}
+
+/* Altura da barra inferior + área segura do iPhone. */
+@utility pb-barra {
+  padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
+}
+
+@utility pb-seguro {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@utility pt-seguro {
+  padding-top: env(safe-area-inset-top);
+}
