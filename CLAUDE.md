@@ -211,9 +211,13 @@ WhatsApp (link `wa.me`, número em variável de ambiente) e botão "Sair".
 **Barra de navegação fixa no rodapé**, quatro abas com ícone e rótulo:
 
 ```
-  Acervo        Calculadora      Histórico        Conta
-     /          /calculadora     /historico       /conta
+  Acervo     Calculadora    Histórico    Ferramentas    Conta
+    /        /calculadora   /historico     (menu)       /conta
 ```
+
+"Ferramentas" não é rota: abre uma folha por cima com Meus dados, Orçamentos,
+Documentos e Scripts. O que ainda não existe aparece apagado com o selo
+"Em breve". Cinco abas é o limite; o que vier depois entra dentro dessa folha.
 
 A aba ativa fica em framboesa. O conteúdo tem `padding-bottom` suficiente para
 não ficar escondido atrás da barra.
@@ -224,9 +228,10 @@ não ficar escondido atrás da barra.
 
 Rota `/`. É a tela inicial do aplicativo.
 
-1. **Saudação compacta** — "Bem-vinda, {primeiro nome}!" e abaixo "Seu acervo
-   completo de projetos de festa, pronto pra usar." O primeiro nome vem de
-   `profiles.nome`; se estiver vazio, use a parte do e-mail antes do `@`.
+1. **Saudação compacta** — "Olá, {primeiro nome}!" e abaixo "Seu acervo
+   completo de projetos de festa, pronto pra usar." A saudação é neutra de
+   propósito: o kit também é comprado por homens. O primeiro nome vem do nome da
+   compra; se estiver vazio, use a parte do e-mail antes do `@`.
 
 2. **Banner de novidade** — faixa horizontal em confete claro, com o texto vindo
    de variável de ambiente e um botão "Ver novidades" que abre um link também

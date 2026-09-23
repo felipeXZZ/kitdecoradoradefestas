@@ -20,7 +20,8 @@ export default async function AcervoPage() {
   return (
     <div className="space-y-6">
       <section>
-        <h1 className="font-titulo text-2xl leading-tight">Bem-vinda, {primeiroNome(sessao)}!</h1>
+        {/* Saudação neutra: o kit também é comprado por homens. */}
+        <h1 className="font-titulo text-2xl leading-tight">Olá, {primeiroNome(sessao)}!</h1>
         <p className="mt-1 text-ameixa/70">Seu acervo completo de projetos de festa, pronto pra usar.</p>
       </section>
 
