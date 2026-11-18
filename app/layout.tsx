@@ -38,7 +38,8 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR" className={`${bricolage.variable} ${inter.variable}`}>
+    // Extensões de navegador mexem nos atributos do <html> antes do React carregar.
+    <html lang="pt-BR" className={`${bricolage.variable} ${inter.variable}`} suppressHydrationWarning>
       <body>
         {children}
         <RegistrarSW />

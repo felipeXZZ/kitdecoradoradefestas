@@ -17,8 +17,6 @@ const TAMANHO_MAXIMO = 64 * 1024;
 const STATUS_APROVADO = new Set(["paid", "approved", "aprovado", "pago", "completed"]);
 const STATUS_PERDA = new Set(["refunded", "charged_back", "chargedback", "estornado"]);
 
-type Tipo = "basico" | "completo" | "upgrade";
-
 export async function POST(request: NextRequest) {
   const bruto = (await request.text()).slice(0, TAMANHO_MAXIMO);
   const admin = createAdminClient();
@@ -56,7 +54,6 @@ export async function POST(request: NextRequest) {
     .toLowerCase();
   const pagamentoId = texto(pegar(payload, "payment.id", "data.payment.id", "transaction_id"));
   const produtos = idsDeProduto(payload);
-  const valor = valorEmReais(pegar(payload, "payment.amount", "data.payment.amount", "amount"));
   const base = { email, produto: produtos.join(",") || undefined };
 
   if (!STATUS_APROVADO.has(status)) {
@@ -66,14 +63,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: true, ignorado: "status" });
   }
 
-  const tipo = tipoDaCompra(produtos, valor);
-  if (!email || !tipo) {
-    await log("ignorado", { ...base, detalhe: !email ? "sem e-mail" : "produto não mapeado" });
-    return NextResponse.json({ ok: true, ignorado: !email ? "email" : "produto" });
+  if (!email) {
+    await log("ignorado", { ...base, detalhe: "sem e-mail" });
+    return NextResponse.json({ ok: true, ignorado: "email" });
   }
 
   try {
-    const detalhe = await liberarAcesso(admin, { email, nome, tipo, pagamentoId });
+    const detalhe = await liberarAcesso(admin, { email, nome, pagamentoId });
     await log("processado", { ...base, detalhe });
     return NextResponse.json({ ok: true });
   } catch (e) {
@@ -90,22 +86,19 @@ async function liberarAcesso(
   {
     email,
     nome,
-    tipo,
     pagamentoId,
-  }: { email: string; nome?: string; tipo: Tipo; pagamentoId?: string },
+  }: { email: string; nome?: string; pagamentoId?: string },
 ) {
-  const planoComprado: Plano = tipo === "basico" ? "basico" : "completo";
+  // O Kit é vendido como upsell do 150 Festas na Mesa: toda compra aprovada
+  // libera o acesso inteiro.
+  const plano: Plano = "completo";
 
   const { data: existente, error: erroBusca } = await admin
     .from("compras")
-    .select("id, plano, nome")
+    .select("id, nome")
     .eq("email", email)
     .maybeSingle();
   if (erroBusca) throw new Error(`busca compra: ${erroBusca.message}`);
-
-  // Nunca rebaixa: quem já tem o completo continua com ele.
-  const plano: Plano =
-    existente?.plano === "completo" ? "completo" : planoComprado;
 
   const registro = {
     email,
@@ -119,7 +112,7 @@ async function liberarAcesso(
   const { error } = await admin.from("compras").upsert(registro, { onConflict: "email" });
   if (error) throw new Error(`grava compra: ${error.message}`);
 
-  return `${existente ? "acesso atualizado" : "acesso liberado"}, plano ${plano} (${tipo})`;
+  return `${existente ? "acesso atualizado" : "acesso liberado"}, plano ${plano}`;
 }
 
 /** IDs do produto principal e dos order bumps/upsells da mesma compra. */
@@ -136,49 +129,6 @@ function idsDeProduto(payload: unknown) {
     }
   }
   return [...ids];
-}
-
-/** Centavos ou reais: o gateway manda `amount` de um jeito nas duas. */
-function valorEmReais(v: unknown) {
-  const n = typeof v === "string" ? Number(v.replace(",", ".")) : Number(v);
-  if (!Number.isFinite(n) || n <= 0) return null;
-  // Acima de mil não é preço deste produto: veio em centavos.
-  return n > 1000 ? n / 100 : n;
-}
-
-/**
- * Qual acesso a compra dá. Primeiro pelos IDs de produto; se o checkout usa um
- * produto só com ofertas diferentes (é o nosso caso na GGCheckout), decide pelo
- * valor pago. O produto de maior acesso ganha.
- */
-function tipoDaCompra(ids: string[], valor: number | null): Tipo | null {
-  const lista = (nome: string) =>
-    (process.env[nome] ?? "")
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean);
-
-  if (ids.some((id) => lista("WEBHOOK_PRODUTOS_COMPLETO").includes(id))) return "completo";
-  if (ids.some((id) => lista("WEBHOOK_PRODUTOS_UPGRADE").includes(id))) return "upgrade";
-  if (ids.some((id) => lista("WEBHOOK_PRODUTOS_BASICO").includes(id))) return "basico";
-
-  if (valor !== null) {
-    const numero = (nome: string, padrao: number) => {
-      const n = Number(process.env[nome]);
-      return Number.isFinite(n) && n > 0 ? n : padrao;
-    };
-    // Upgrade custa menos que o completo, então é testado antes.
-    const upgrade = numero("WEBHOOK_VALOR_UPGRADE", 12);
-    if (Math.abs(valor - upgrade) < 0.5) return "upgrade";
-    if (valor >= numero("WEBHOOK_VALOR_MIN_COMPLETO", 20)) return "completo";
-    return "basico";
-  }
-
-  // Sem ID conhecido e sem valor: cai no plano padrão, se houver. Vale mais
-  // liberar acesso a mais do que deixar uma compradora na mão.
-  const padrao = (process.env.WEBHOOK_PRODUTO_PADRAO ?? "").trim();
-  if (padrao === "basico" || padrao === "completo") return padrao;
-  return null;
 }
 
 function segredoValido(request: NextRequest) {

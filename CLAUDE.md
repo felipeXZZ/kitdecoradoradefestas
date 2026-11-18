@@ -411,18 +411,10 @@ Notas de implementação:
 - Gateway: **GGCheckout**. O segredo chega em `x-secret` ou em
   `Authorization: Bearer` e é comparado com `WEBHOOK_SECRET`. Compra aprovada =
   `payment.status` (ou o final de `event`, como em `pix.paid`) igual a `paid`.
-- Produto → plano pelas variáveis `WEBHOOK_PRODUTOS_BASICO`, `_COMPLETO` e
-  `_UPGRADE` (IDs da GGCheckout, separados por vírgula). Olha `product.id` e
-  todos os `products[].id` (order bump e upsell entram na mesma compra) e vale o
-  maior acesso. Plano nunca é rebaixado.
-- Na GGCheckout o acervo é **um produto só** (`Z3rpkIGhofYxEdQl5a2C`) com ofertas
-  de preços diferentes, então o `product.id` não distingue plano. Sem ID
-  conhecido, o plano vem do **valor pago**: a partir de
-  `WEBHOOK_VALOR_MIN_COMPLETO` (padrão 20) é completo, perto de
-  `WEBHOOK_VALOR_UPGRADE` (padrão 12) é upgrade, abaixo disso é básico.
-  `amount` é aceito em reais ou centavos.
-- `WEBHOOK_PRODUTO_PADRAO` (`basico` | `completo`) é a última rede: compra sem ID
-  conhecido e sem valor cai nesse plano em vez de ficar sem acesso.
+- **Toda compra aprovada libera o plano `completo`.** O Kit é vendido como
+  upsell do produto principal (150 Festas na Mesa), e o upsell já é o acesso
+  inteiro. Produto e valor não decidem plano; os IDs de produto só vão para o
+  `webhook_log`. A cliente entra com o mesmo e-mail da compra principal.
 - O evento `test` da GGCheckout não tem `payment.status`, então é registrado e
   ignorado. Isso é o esperado: o teste dela serve para provar o segredo e a URL.
 - Compra aprovada faz upsert em `compras` com e-mail, nome e plano. Não envia
@@ -464,12 +456,6 @@ NEXT_PUBLIC_CHECKOUT_UPGRADE_URL=
 NEXT_PUBLIC_BANNER_NOVIDADE=
 NEXT_PUBLIC_BANNER_NOVIDADE_URL=
 WEBHOOK_SECRET=
-WEBHOOK_PRODUTOS_BASICO=
-WEBHOOK_PRODUTOS_COMPLETO=
-WEBHOOK_PRODUTOS_UPGRADE=
-WEBHOOK_PRODUTO_PADRAO=
-WEBHOOK_VALOR_MIN_COMPLETO=
-WEBHOOK_VALOR_UPGRADE=
 ADMIN_EMAILS=
 ```
 
